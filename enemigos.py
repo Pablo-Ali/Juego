@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from random import choice, random
 from elementales import ELEMENTOS
+from stats_enemigos import generar_stats_para_enemigo
+
 
 class Enemigo(ABC):
     def __init__(self, nombre: str, nivel: int):
@@ -18,6 +20,7 @@ class Enemigo(ABC):
 
     @abstractmethod
     def _asignar_estadisticas(self):
+        """Método que deben implementar las subclases para asignar stats según el tipo."""
         pass
 
     def esta_vivo(self) -> bool:
@@ -33,45 +36,54 @@ class Enemigo(ABC):
         return self.poder_magico
 
     def __str__(self):
-        return f"{self.nombre} (Nivel {self.nivel}) - Elemento: {self.elemento} - Vida: {self.vida}"
+        return (
+            f"{self.nombre} (Nivel {self.nivel}) - "
+            f"Elemento: {self.elemento} - Vida: {self.vida}"
+        )
+
 
 # -------------------------
 # Subclases concretas
 
 class Esbirro(Enemigo):
     def _asignar_estadisticas(self):
-        self.vida = 20 + self.nivel * 5
-        self.ataque = 5 + self.nivel * 2
-        self.defensa = 3 + self.nivel
-        self.poder_magico = 2 + self.nivel
-        self.resistencia_magica = 2 + self.nivel
+        stats = generar_stats_para_enemigo('esbirro', self.nivel)
+        self.vida = stats['vida']
+        self.ataque = stats['ataque']
+        self.defensa = stats['defensa']
+        self.poder_magico = stats['poder_magico']
+        self.resistencia_magica = stats['resistencia_magica']
+
 
 class Elite(Enemigo):
     def _asignar_estadisticas(self):
-        self.vida = 40 + self.nivel * 6
-        self.ataque = 10 + self.nivel * 2
-        self.defensa = 5 + self.nivel * 2
-        self.poder_magico = 4 + self.nivel
-        self.resistencia_magica = 4 + self.nivel
+        stats = generar_stats_para_enemigo('elite', self.nivel)
+        self.vida = stats['vida']
+        self.ataque = stats['ataque']
+        self.defensa = stats['defensa']
+        self.poder_magico = stats['poder_magico']
+        self.resistencia_magica = stats['resistencia_magica']
+
 
 class Jefe(Enemigo):
     def _asignar_estadisticas(self):
-        self.vida = 80 + self.nivel * 8
-        self.ataque = 15 + self.nivel * 3
-        self.defensa = 10 + self.nivel * 2
-        self.poder_magico = 6 + self.nivel * 2
-        self.resistencia_magica = 6 + self.nivel * 2
+        stats = generar_stats_para_enemigo('jefe', self.nivel)
+        self.vida = stats['vida']
+        self.ataque = stats['ataque']
+        self.defensa = stats['defensa']
+        self.poder_magico = stats['poder_magico']
+        self.resistencia_magica = stats['resistencia_magica']
 
     def atacar_fisico(self) -> int:
-        critico = random() < 0.1
-        if critico:
+        probabilidad_critico = 0.1
+        if random() < probabilidad_critico:
             print(f"{self.nombre} realizó un GOLPE CRÍTICO FÍSICO!")
             return self.ataque * 2
         return self.ataque
 
     def atacar_magico(self) -> int:
-        critico = random() < 0.1
-        if critico:
+        probabilidad_critico = 0.1
+        if random() < probabilidad_critico:
             print(f"{self.nombre} realizó un GOLPE CRÍTICO MÁGICO!")
             return self.poder_magico * 2
         return self.poder_magico
