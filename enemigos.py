@@ -20,7 +20,6 @@ class Enemigo(ABC):
 
     @abstractmethod
     def _asignar_estadisticas(self):
-        """Método que deben implementar las subclases para asignar stats según el tipo."""
         pass
 
     def esta_vivo(self) -> bool:
@@ -34,6 +33,23 @@ class Enemigo(ABC):
 
     def atacar_magico(self) -> int:
         return self.poder_magico
+
+    def realizar_ataque(self) -> tuple[str, int]:
+        """
+        Determina si el enemigo realiza un ataque físico o mágico,
+        según su stat dominante y una probabilidad.
+        Devuelve una tupla con el tipo de ataque y el daño infligido.
+        """
+        prob = random()
+
+        if self.ataque > self.poder_magico:
+            return ("físico", self.atacar_fisico()) if prob < 0.7 else ("mágico", self.atacar_magico())
+
+        elif self.poder_magico > self.ataque:
+            return ("mágico", self.atacar_magico()) if prob < 0.7 else ("físico", self.atacar_fisico())
+
+        else:  # Si son iguales
+            return ("físico", self.atacar_fisico()) if prob < 0.5 else ("mágico", self.atacar_magico())
 
     def __str__(self):
         return (
@@ -75,15 +91,13 @@ class Jefe(Enemigo):
         self.resistencia_magica = stats['resistencia_magica']
 
     def atacar_fisico(self) -> int:
-        probabilidad_critico = 0.1
-        if random() < probabilidad_critico:
+        if random() < 0.1:
             print(f"{self.nombre} realizó un GOLPE CRÍTICO FÍSICO!")
             return self.ataque * 2
         return self.ataque
 
     def atacar_magico(self) -> int:
-        probabilidad_critico = 0.1
-        if random() < probabilidad_critico:
+        if random() < 0.1:
             print(f"{self.nombre} realizó un GOLPE CRÍTICO MÁGICO!")
             return self.poder_magico * 2
         return self.poder_magico
