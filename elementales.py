@@ -20,7 +20,7 @@ DEBILIDADES = {
     "agua": "fuego"
 }
 
-def calcular_multiplicador(tipo_ataque: str, tipo_defensor: str) -> float:
+def obtener_modificador_elemental(tipo_ataque: str, tipo_defensor: str) -> float:
     """
     Devuelve un multiplicador de daño según las relaciones elementales.
     - 2.0 si el atacante es fuerte contra el defensor.
